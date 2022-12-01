@@ -26,7 +26,7 @@ function _template(year, day)
     
     """
     # $(_base_url(year, day))
-    using AdventOfCode
+    using AdventOfCodeUtil
 
     input = readlines("$rel_path")
 
@@ -47,7 +47,7 @@ function _setup_data_file(year, day)
 
     data_path = joinpath(pwd(), rel_path)
     if isfile(data_path)
-        @warn "$data_path already exists. AdventOfCode.jl will not redownload it"
+        @warn "$data_path already exists. AdventOfCodeUtil will not redownload it"
         return nothing
     end
     time_req = HTTP.get("http://worldclockapi.com/api/json/est/now")

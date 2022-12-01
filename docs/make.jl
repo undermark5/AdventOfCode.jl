@@ -1,6 +1,6 @@
-using Documenter, AdventOfCode
+using Documenter, AdventOfCodeUtil
 
-makedocs(sitename="AdventOfCode.jl")
+makedocs(sitename="AdventOfCodeUtil")
 deploydocs(
-    repo = "github.com/SebRollen/AdventOfCode.jl.git",
+    repo = "github.com/undermark5/AdventOfCodeUtil.git",
 )

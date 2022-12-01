@@ -1,7 +1,7 @@
-using AdventOfCode, Test, Mocking, HTTP, Dates
+using AdventOfCodeUtil, Test, Mocking, HTTP, Dates
 Mocking.activate()
 @testset "All tests" begin
-    AOC = AdventOfCode
+    AOC = AdventOfCodeUtil
     get_patch = @patch HTTP.get(a...; kw...) = (status = 200, body = "TESTDATA")
     get_error_patch = @patch HTTP.get(a...; kw...) = (status = 404, body = "ERROR")
 
@@ -45,7 +45,7 @@ Mocking.activate()
             @testset "_template" begin
                 @test AOC._template(2019, 1; include_year = include_year) == """
                 # https://adventofcode.com/2019/day/1
-                using AdventOfCode
+                using AdventOfCodeUtil
 
                 input = readlines("$(relpath(joinpath(data_path, "day_1.txt")))")
 
