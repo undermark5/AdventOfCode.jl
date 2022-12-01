@@ -75,8 +75,8 @@ function _setup_data_file(year, day)
 end
 
 function _is_unlocked(year, day)
-    time_req = HTTP.get("http://worldclockapi.com/api/json/est/now")
-    current_datetime = JSON.parse(String(time_req.body))["currentDateTime"]
+    time_req = HTTP.get("https://www.timeapi.io/api/Time/current/zone?timeZone=America/New_York")
+    current_datetime = JSON.parse(String(time_req.body))["dateTime"]
     current_date = Date(current_datetime[1:10])
     is_unlocked = current_date >= Date(year, 12, day)
     if !is_unlocked
