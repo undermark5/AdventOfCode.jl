@@ -1,4 +1,4 @@
-module AdventOfCode
+module AdventOfCodeUtil
 
 using HTTP, Dates, JSON
 using Mocking
