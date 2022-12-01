@@ -21,9 +21,8 @@ function _download_data(year, day)
     error("Unable to download data")
 end
 
-function _template(year, day; include_year = true)
-    rel_path = joinpath("../data", "day$(lpad(day, 2, "0")).txt")
-    include_year && (rel_path = joinpath(string(year), rel_path))
+function _template(year, day)
+    rel_path = joinpath("./data", "day$(lpad(day, 2, "0")).txt")
     
     """
     # $(_base_url(year, day))
@@ -43,9 +42,8 @@ function _template(year, day; include_year = true)
     """
 end
 
-function _setup_data_file(year, day; include_year = true)
-    rel_path = joinpath("../data", "day$(lpad(day, 2, "0")).txt")
-    include_year && (rel_path = joinpath(string(year), rel_path))
+function _setup_data_file(year, day)
+    rel_path = joinpath("./data", "day$(lpad(day, 2, "0")).txt")
 
     data_path = joinpath(pwd(), rel_path)
     if isfile(data_path)
@@ -76,36 +74,34 @@ function _is_unlocked(year, day)
 end
 
 """
-    setup_files(year, day; force = false, include_year = true)
-    setup_files(; force = false, include_year = true)
+    setup_files(year, day; force = false)
+    setup_files(; force = false)
 
 Downloads the input file for the specified year and date and stores that file in
-`{year}/data/day_{day}.txt` or `data/day_{day}.txt` if `include_year` is set to `false`.
-Also sets up a template file in `{year}/src/day_{day}.jl` for your script
-(`src/day_{day}.jl` if `include_year` is set to `false`). 
+`data/day_{day}.txt`.
+Also sets up a template file in `src/day_{day}.jl` for your script.
 `force=true` will recreate the `src` file even if it already exists. 
 The `data` file will not be re-downloaded even with `force=true` 
 since it's a static file and to reduce load on AdventOfCode's servers.
 
 If `year` and `day` are not provided, the setup defaults to today's date.
 """
-function setup_files(year, day; force = false, include_year = true)
+function setup_files(year, day; force = false)
     is_unlocked = _is_unlocked(year, day)
-    rel_path = joinpath("../src", "day$(lpad(day,2,"0")).jl")
-    include_year && (rel_path = joinpath(string(year), rel_path))
+    rel_path = joinpath("./src", "day$(lpad(day,2,"0")).jl")
     code_path = joinpath(pwd(), rel_path)
-    is_unlocked &&  _setup_data_file(year, day, include_year = include_year)
+    is_unlocked &&  _setup_data_file(year, day)
     if !force && isfile(code_path)
         @warn "$code_path already exists. To overwrite, re-run with `force=true`"
     else
         mkpath(splitdir(code_path)[1])
         open(code_path, "w+") do io
-            write(io, _template(year, day, include_year=include_year))
+            write(io, _template(year, day))
         end
     end
     return code_path
 end
 
-setup_files(; force = false, include_year = true) = setup_files(year(today()), day(today()), force = force, include_year = include_year)
+setup_files(; force = false) = setup_files(year(today()), day(today()), force = force)
 
 end
