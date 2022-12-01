@@ -22,43 +22,55 @@ function _download_data(year, day)
 end
 
 function _template(year, day)
+    utils = "./src/utils.jl"
     rel_path = joinpath("./data", "day$(lpad(day, 2, "0")).txt")
-    
+    example_path = joinpath("./data", "day$(lpad(day, 2, "0"))_example.txt")
+
     """
     # $(_base_url(year, day))
     using AdventOfCodeUtil
-
+    $(isfile(utils) ? "include(\"utils.jl\")\n" : "")
+    example = readlines("$example_path")
     input = readlines("$rel_path")
 
     function part_1(input)
         nothing
     end
-    @info part_1(input)
+    @show part_1(example)
+    @show part_1(input)
 
     function part_2(input)
         nothing
     end
-    @info part_2(input)
+    @show part_2(example)
+    @show part_2(input)
     """
 end
 
 function _setup_data_file(year, day)
     rel_path = joinpath("./data", "day$(lpad(day, 2, "0")).txt")
 
+    example_path = joinpath(pwd(), joinpath("./data", "day$(lpad(day, 2, "0"))_example.txt"))
     data_path = joinpath(pwd(), rel_path)
+    should_return = false
     if isfile(data_path)
         @warn "$data_path already exists. AdventOfCodeUtil will not redownload it"
+        should_return = true
+    end
+    if isfile(example_path)
+        @warn "$example_path already exists."
+        should_return = true
+    end
+    if should_return
         return nothing
     end
-    time_req = HTTP.get("http://worldclockapi.com/api/json/est/now")
-    current_datetime = JSON.parse(String(time_req.body))["currentDateTime"]
-    current_date = Date(current_datetime[1:10])
     if _is_unlocked(year, day)
         data = _download_data(year, day)
         mkpath(splitdir(data_path)[1])
         open(data_path, "w+") do io
             write(io, data)
         end
+        touch(example_path)
     end
 end
 
